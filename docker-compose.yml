@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: kollevio-db
+    environment:
+      POSTGRES_DB: kollevio
+      POSTGRES_USER: kollevio
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - internal
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kollevio"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: .
+    container_name: kollevio-backend
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://kollevio:${DB_PASSWORD}@kollevio-db:5432/kollevio
+    networks:
+      - internal
+      - iffiu-default
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+
+networks:
+  internal:
+    name: kollevio-internal
+  iffiu-default:
+    external: true
+    name: iffiu-default

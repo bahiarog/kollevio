@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Registrieren — kollevio{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h2>Unternehmen registrieren</h2>
+    <p style="margin-bottom:24px;">Legen Sie Ihren Workspace an und stellen Sie direkt danach Ihren ersten digitalen Mitarbeiter ein.</p>
+    <div class="form-error" id="form-error"></div>
+    <form id="register-form">
+      <div class="field"><label>Firmenname</label><input name="company_name" required></div>
+      <div class="field"><label>Ihr Name</label><input name="name" required></div>
+      <div class="field"><label>E-Mail</label><input type="email" name="email" required></div>
+      <div class="field"><label>Benutzername</label><input name="username" required></div>
+      <div class="field"><label>Passwort (mind. 8 Zeichen)</label><input type="password" name="password" required minlength="8"></div>
+      <button class="btn btn-primary btn-block" type="submit">Workspace erstellen</button>
+    </form>
+    <div class="auth-switch">Bereits registriert? <a href="/login">Anmelden</a></div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/app.js"></script>
+<script>
+document.getElementById('register-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const errEl = document.getElementById('form-error');
+  errEl.textContent = '';
+  const data = Object.fromEntries(new FormData(e.target));
+  try {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)
+    });
+    const body = await res.json();
+    if (!res.ok) { errEl.textContent = body.detail || 'Registrierung fehlgeschlagen.'; return; }
+    window.location.href = body.redirect || '/dashboard';
+  } catch (err) { errEl.textContent = 'Verbindungsfehler. Bitte erneut versuchen.'; }
+});
+</script>
+{% endblock %}

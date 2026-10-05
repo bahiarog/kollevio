@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}kollevio — Digitale Mitarbeiter für Ihr Team{% endblock %}</title>
+<meta name="description" content="{% block description %}kollevio ist die Schmiede für digitale Mitarbeiter: spezialisierte KI-Agenten, die Ihr Team sofort verstärken.{% endblock %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/">kolle<span class="brand-accent">vio</span></a>
+    <nav class="main-nav">
+      <a href="/#rollen">Rollen</a>
+      <a href="/#funktion">So funktioniert's</a>
+      <a href="/#preise">Preise</a>
+      {% if request.cookies.get('kollevio_session') %}
+        <a href="/dashboard" class="nav-cta">Mein Team</a>
+      {% else %}
+        <a href="/login">Anmelden</a>
+        <a href="/register" class="nav-cta">Kostenlos starten</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">kolle<span class="brand-accent">vio</span></div>
+    <div class="footer-links">
+      <a href="/impressum">Impressum</a>
+      <a href="/agb">AGB</a>
+      <a href="mailto:hello@kollevio.com">hello@kollevio.com</a>
+    </div>
+    <div class="footer-copy">© <span id="footer-year"></span> kollevio — Rafael Oliveira Göpfert</div>
+  </div>
+</footer>
+<script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="container">
+    <h1>Stellen Sie Ihr nächstes KI-Teammitglied ein.</h1>
+    <p class="lead">kollevio ist die Schmiede für digitale Mitarbeiter: spezialisierte KI-Agenten mit eigener Persönlichkeit, die Sie in wenigen Minuten in Ihr Team holen — und sofort mit echten Aufgaben betrauen.</p>
+    <div class="hero-ctas">
+      <a href="/register" class="btn btn-primary">Kostenlos starten</a>
+      <a href="#rollen" class="btn btn-secondary">Rollen ansehen</a>
+    </div>
+  </div>
+</section>
+
+<section id="rollen">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Rollen-Katalog</div>
+      <h2>Drei digitale Mitarbeiter, einsatzbereit</h2>
+      <p>Jede Rolle bringt eine eigene Expertise, einen eigenen Denkstil und einen eigenen Avatar mit — kein Generalist, sondern ein Spezialist für genau diese Aufgabe.</p>
+    </div>
+    <div class="roles-grid">
+      {% for item in roles %}
+      <div class="role-card">
+        <div class="role-avatar">{{ item.preview_svg | safe }}</div>
+        <h3>{{ item.role.name }}</h3>
+        <p class="tagline">{{ item.role.tagline }}</p>
+        <a href="/register" class="btn btn-secondary btn-block">Jetzt einstellen</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section id="funktion">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">So funktioniert's</div>
+      <h2>Vom Katalog zum ersten Ergebnis</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <h4>Rolle wählen</h4>
+        <p>Durchsuchen Sie den Rollen-Katalog und wählen Sie die Expertise, die Ihr Team gerade braucht.</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h4>Einstellen</h4>
+        <p>Mit einem Klick wird der digitale Mitarbeiter Teil Ihres Workspace — inklusive eigenem Avatar und Namen.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h4>Aufgabe stellen</h4>
+        <p>Schreiben Sie Ihre erste Aufgabe im Chat — genauso, wie Sie es mit einem menschlichen Kollegen tun würden.</p>
+      </div>
+      <div class="step">
+        <div class="num">4</div>
+        <h4>Ergebnis erhalten</h4>
+        <p>Der Mitarbeiter antwortet strukturiert, nachvollziehbar und in Ihrer Sprache.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="preise">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Preise</div>
+      <h2>Ein transparentes Modell: pro Mitarbeiter, pro Monat</h2>
+    </div>
+    <div class="pricing-card">
+      <div>Digitaler Mitarbeiter</div>
+      <div class="price">ab 149€<span>/Monat</span></div>
+      <ul class="pricing-features">
+        <li>Ein eingestellter Agent Ihrer Wahl</li>
+        <li>Unbegrenzte Aufgaben &amp; Chatverlauf</li>
+        <li>Jederzeit kündbar</li>
+        <li>Weitere Rollen jederzeit dazu buchbar</li>
+      </ul>
+      <a href="/register" class="btn btn-primary btn-block">Jetzt starten</a>
+      <p class="price-note">Indikativer Startpreis pro Agent. Individuelle Staffelpreise für mehrere digitale Mitarbeiter auf Anfrage.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="cta-band">
+    <h2>Bereit, Ihr Team zu verstärken?</h2>
+    <p>Registrieren Sie Ihr Unternehmen und stellen Sie Ihren ersten digitalen Mitarbeiter in wenigen Minuten ein.</p>
+    <a href="/register" class="btn btn-primary">Kostenlos starten</a>
+  </div>
+</section>
+{% endblock %}

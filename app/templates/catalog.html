@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Rollen-Katalog — kollevio{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="dash-header">
+    <h2 style="margin:0;">Rollen-Katalog</h2>
+  </div>
+  <div class="dash-tabs">
+    <a href="/dashboard">Mein Team</a>
+    <a href="/katalog" class="active">Rollen-Katalog</a>
+  </div>
+
+  <div class="roles-grid">
+    {% for item in roles %}
+    <div class="role-card">
+      <div class="role-avatar">{{ item.preview_svg | safe }}</div>
+      <h3>{{ item.role.name }}</h3>
+      <p class="tagline">{{ item.role.description }}</p>
+      <button class="btn btn-primary btn-block hire-btn" data-slug="{{ item.role.slug }}">Jetzt einstellen</button>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.querySelectorAll('.hire-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    btn.textContent = 'Wird eingestellt…';
+    const res = await fetch('/api/agents/hire', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({role_slug: btn.dataset.slug})
+    });
+    if (res.status === 401) { window.location.href = '/login'; return; }
+    if (!res.ok) { btn.textContent = 'Fehler, bitte erneut versuchen'; btn.disabled = false; return; }
+    window.location.href = '/dashboard';
+  });
+});
+</script>
+{% endblock %}

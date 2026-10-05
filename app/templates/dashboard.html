@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Mein Team — kollevio{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="dash-header">
+    <div>
+      <h2 style="margin-bottom:4px;">{{ tenant.company_name if tenant else '' }}</h2>
+      <p style="margin:0;">Angemeldet als {{ user.name if user else '' }}</p>
+    </div>
+    <button class="btn btn-secondary" id="logout-btn">Abmelden</button>
+  </div>
+
+  <div class="dash-tabs">
+    <a href="/dashboard" class="active">Mein Team</a>
+    <a href="/katalog">Rollen-Katalog</a>
+  </div>
+
+  <div id="team-grid" class="team-grid"></div>
+  <div id="empty-state" class="empty-state" style="display:none;">
+    <p>Noch keine digitalen Mitarbeiter eingestellt.</p>
+    <a href="/katalog" class="btn btn-primary">Rollen-Katalog ansehen</a>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/app.js"></script>
+<script>
+document.getElementById('logout-btn').addEventListener('click', async () => {
+  await fetch('/api/auth/logout', {method: 'POST'});
+  window.location.href = '/';
+});
+
+(async () => {
+  const res = await fetch('/api/agents/mine');
+  if (res.status === 401) { window.location.href = '/login'; return; }
+  const agents = await res.json();
+  const grid = document.getElementById('team-grid');
+  if (!agents.length) {
+    document.getElementById('empty-state').style.display = 'block';
+    return;
+  }
+  grid.innerHTML = agents.map(a => `
+    <a class="agent-card" href="/chat/${a.id}">
+      <div class="avatar-wrap">${a.avatar_svg}</div>
+      <h4>${a.custom_name}</h4>
+      <p style="margin:0;color:var(--text-muted);font-size:.85rem;">${a.role_name}</p>
+    </a>
+  `).join('');
+})();
+</script>
+{% endblock %}
