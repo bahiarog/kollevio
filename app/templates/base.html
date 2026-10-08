@@ -9,11 +9,24 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/static/css/style.css">
+<link rel="icon" type="image/svg+xml" href="/static/img/logo-mark.svg">
 </head>
 <body>
 <header class="site-header">
   <div class="container header-inner">
-    <a class="brand" href="/">kolle<span class="brand-accent">vio</span></a>
+    <a class="brand" href="/">
+      <svg class="brand-mark" width="28" height="28" viewBox="0 0 64 64" aria-hidden="true">
+        <defs><linearGradient id="bm-g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#E08A4F"/><stop offset="100%" stop-color="#B85C28"/></linearGradient></defs>
+        <rect width="64" height="64" rx="16" fill="url(#bm-g)"/>
+        <line x1="32" y1="13" x2="32" y2="20" stroke="#FBF8F3" stroke-width="2.6" stroke-linecap="round" opacity="0.9"/>
+        <circle cx="32" cy="11.5" r="3.4" fill="#FBF8F3"/>
+        <circle cx="32" cy="37" r="15.5" fill="#FBF8F3"/>
+        <circle cx="26.2" cy="34.5" r="2.6" fill="#2B2420"/>
+        <circle cx="37.8" cy="34.5" r="2.6" fill="#2B2420"/>
+        <path d="M 25.5 42 Q 32 47 38.5 42" fill="none" stroke="#2B2420" stroke-width="2.4" stroke-linecap="round" opacity="0.85"/>
+      </svg>
+      kolle<span class="brand-accent">vio</span>
+    </a>
     <nav class="main-nav">
       <a href="/#rollen">Rollen</a>
       <a href="/#funktion">So funktioniert's</a>
@@ -34,7 +47,18 @@
 
 <footer class="site-footer">
   <div class="container footer-inner">
-    <div class="footer-brand">kolle<span class="brand-accent">vio</span></div>
+    <div class="footer-brand">
+      <svg class="brand-mark" width="22" height="22" viewBox="0 0 64 64" aria-hidden="true">
+        <rect width="64" height="64" rx="16" fill="url(#bm-g)"/>
+        <line x1="32" y1="13" x2="32" y2="20" stroke="#FBF8F3" stroke-width="2.6" stroke-linecap="round" opacity="0.9"/>
+        <circle cx="32" cy="11.5" r="3.4" fill="#FBF8F3"/>
+        <circle cx="32" cy="37" r="15.5" fill="#FBF8F3"/>
+        <circle cx="26.2" cy="34.5" r="2.6" fill="#2B2420"/>
+        <circle cx="37.8" cy="34.5" r="2.6" fill="#2B2420"/>
+        <path d="M 25.5 42 Q 32 47 38.5 42" fill="none" stroke="#2B2420" stroke-width="2.4" stroke-linecap="round" opacity="0.85"/>
+      </svg>
+      kolle<span class="brand-accent">vio</span>
+    </div>
     <div class="footer-links">
       <a href="/impressum">Impressum</a>
       <a href="/agb">AGB</a>
