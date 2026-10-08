@@ -11,7 +11,9 @@
   </div>
   <div class="chat-box" id="chat-box"></div>
   <form class="chat-input-row" id="chat-form">
+    <button type="button" id="mic-btn" title="Spracheingabe" style="display:none;background:var(--bg-card2);border:1px solid var(--border);border-radius:10px;width:44px;flex-shrink:0;cursor:pointer;font-size:16px">🎤</button>
     <input type="text" id="chat-input" placeholder="Nachricht schreiben…" autocomplete="off" required>
+    <button type="button" id="voice-toggle" title="Antworten vorlesen" style="display:none;background:var(--bg-card2);border:1px solid var(--border);border-radius:10px;width:44px;flex-shrink:0;cursor:pointer;font-size:16px" aria-pressed="false">🔇</button>
     <button class="btn btn-primary" type="submit">Senden</button>
   </form>
 </div>
@@ -31,6 +33,68 @@ function appendMsg(sender, content) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// ── Voice: browser-native Web Speech API (no backend, no cost, no API key).
+// Speech recognition support is inconsistent across browsers (good in
+// Chrome/Edge, absent in Firefox, partial in Safari) — feature-detect and
+// simply hide the controls rather than show a broken button. ──────────────
+let speaking = false;
+let voiceOutputEnabled = false;
+let agentVoiceParams = { pitch: 1, rate: 1 };
+
+function pickVoiceParams(seedStr) {
+  // Deterministic, small pitch/rate variation per agent so different hired
+  // instances don't all sound identical — real distinct voices aren't
+  // available for free TTS, this is the honest approximation of that.
+  let h = 0;
+  for (let i = 0; i < seedStr.length; i++) h = (h * 31 + seedStr.charCodeAt(i)) >>> 0;
+  return { pitch: 0.9 + (h % 100) / 100 * 0.35, rate: 0.95 + ((h >> 8) % 100) / 100 * 0.15 };
+}
+
+function speak(text) {
+  if (!voiceOutputEnabled || !('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'de-DE';
+  utter.pitch = agentVoiceParams.pitch;
+  utter.rate = agentVoiceParams.rate;
+  window.speechSynthesis.speak(utter);
+}
+
+const voiceToggleBtn = document.getElementById('voice-toggle');
+if ('speechSynthesis' in window) {
+  voiceToggleBtn.style.display = '';
+  voiceToggleBtn.addEventListener('click', () => {
+    voiceOutputEnabled = !voiceOutputEnabled;
+    voiceToggleBtn.textContent = voiceOutputEnabled ? '🔊' : '🔇';
+    voiceToggleBtn.setAttribute('aria-pressed', String(voiceOutputEnabled));
+    if (!voiceOutputEnabled) window.speechSynthesis.cancel();
+  });
+}
+
+const micBtn = document.getElementById('mic-btn');
+const SpeechRecognitionImpl = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SpeechRecognitionImpl) {
+  micBtn.style.display = '';
+  const recognizer = new SpeechRecognitionImpl();
+  recognizer.lang = 'de-DE';
+  recognizer.interimResults = false;
+  recognizer.maxAlternatives = 1;
+  let listening = false;
+  recognizer.onresult = (e) => {
+    const transcript = e.results[0][0].transcript;
+    input.value = transcript;
+  };
+  recognizer.onend = () => { listening = false; micBtn.textContent = '🎤'; micBtn.style.background = 'var(--bg-card2)'; };
+  recognizer.onerror = () => { listening = false; micBtn.textContent = '🎤'; micBtn.style.background = 'var(--bg-card2)'; };
+  micBtn.addEventListener('click', () => {
+    if (listening) { recognizer.stop(); return; }
+    listening = true;
+    micBtn.textContent = '●';
+    micBtn.style.background = 'var(--accent)';
+    try { recognizer.start(); } catch (e) { listening = false; }
+  });
+}
+
 (async () => {
   const mineRes = await fetch('/api/agents/mine');
   if (mineRes.status === 401) { window.location.href = '/login'; return; }
@@ -39,6 +103,7 @@ function appendMsg(sender, content) {
   if (!agent) { document.getElementById('chat-title').textContent = 'Mitarbeiter nicht gefunden'; return; }
   document.getElementById('chat-title').textContent = agent.custom_name + ' · ' + agent.role_name;
   document.getElementById('chat-avatar').innerHTML = agent.avatar_svg;
+  agentVoiceParams = pickVoiceParams(agent.id || agent.custom_name || 'agent');
 
   const histRes = await fetch(`/api/chat/${tenantAgentId}/history`);
   const history = await histRes.json();
@@ -62,6 +127,7 @@ form.addEventListener('submit', async (e) => {
     const body = await res.json();
     if (!res.ok) { appendMsg('agent', body.detail || 'Fehler bei der Verarbeitung.'); return; }
     appendMsg('agent', body.reply);
+    speak(body.reply);
   } catch (err) {
     appendMsg('agent', 'Verbindungsfehler. Bitte erneut versuchen.');
   } finally {

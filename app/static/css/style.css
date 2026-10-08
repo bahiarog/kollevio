@@ -107,6 +107,16 @@ section { padding: 72px 0; }
 .role-card h3 { font-size: 1.3rem; }
 .role-card .tagline { color: var(--text-muted); font-size: .95rem; flex: 1; }
 
+/* Use cases */
+.usecase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+.usecase-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 26px 28px; box-shadow: 0 1px 2px rgba(33,31,28,0.03);
+}
+.usecase-role { font-weight: 700; font-size: 1.02rem; margin-bottom: 12px; }
+.usecase-card ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 9px; }
+.usecase-card li { font-size: .9rem; color: var(--text-muted); line-height: 1.5; }
+
 /* How it works */
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px; counter-reset: step; }
 .step { padding: 28px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-raised); }
